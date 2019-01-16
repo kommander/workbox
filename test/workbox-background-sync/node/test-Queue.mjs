@@ -7,7 +7,6 @@
 */
 
 import {expect} from 'chai';
-import {reset as iDBReset} from 'shelving-mock-indexeddb';
 import sinon from 'sinon';
 import expectError from '../../../infra/testing/expectError';
 import {Queue} from '../../../packages/workbox-background-sync/Queue.mjs';
@@ -16,8 +15,6 @@ import {QueueStore} from
 import {DB_NAME, DB_VERSION, OBJECT_STORE_NAME} from
   '../../../packages/workbox-background-sync/utils/constants.mjs';
 import {DBWrapper} from '../../../packages/workbox-core/_private/DBWrapper.mjs';
-import {resetEventListeners} from
-  '../../../infra/testing/sw-env-mocks/event-listeners.js';
 
 const MINUTES = 60 * 1000;
 
@@ -31,8 +28,8 @@ describe(`[workbox-background-sync] Queue`, function() {
   const reset = () => {
     sandbox.restore();
     Queue._queueNames.clear();
-    iDBReset();
-    resetEventListeners();
+    self.resetIDB();
+    self.listeners.reset();
   };
 
   beforeEach(async function() {

@@ -7,7 +7,6 @@
 */
 
 import {expect} from 'chai';
-import {reset} from 'shelving-mock-indexeddb';
 import expectError from '../../../../infra/testing/expectError';
 import {devOnly} from '../../../../infra/testing/env-it';
 
@@ -26,11 +25,11 @@ const getObjectStoreEntries = async (version = DB_VERSION) => {
 
 describe(`[workbox-background-sync] QueueStore`, function() {
   beforeEach(function() {
-    reset();
+    self.resetIDB();
   });
 
   after(async function() {
-    reset();
+    self.resetIDB();
   });
 
   describe(`constructor`, function() {

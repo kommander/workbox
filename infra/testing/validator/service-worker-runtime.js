@@ -67,8 +67,9 @@ function setupSpiesAndContext() {
 
   const context = Object.assign({
     workbox,
+  }, makeServiceWorkerEnv(), {
     importScripts,
-  }, makeServiceWorkerEnv());
+  });
 
   const methodsToSpies = {
     importScripts,

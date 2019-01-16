@@ -8,7 +8,6 @@
 
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {reset as iDBReset} from 'shelving-mock-indexeddb';
 
 import expectError from '../../../infra/testing/expectError';
 import {devOnly} from '../../../infra/testing/env-it';
@@ -21,12 +20,12 @@ describe(`[workbox-cache-expiration] CacheExpiration`, function() {
 
   beforeEach(function() {
     sandbox.restore();
-    iDBReset();
+    self.resetIDB();
   });
 
   after(function() {
     sandbox.restore();
-    iDBReset();
+    self.resetIDB();
   });
 
   describe(`constructor`, function() {

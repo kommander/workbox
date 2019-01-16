@@ -12,7 +12,6 @@ import {expect} from 'chai';
 import {Route} from '../../../packages/workbox-routing/Route.mjs';
 import {Router} from '../../../packages/workbox-routing/Router.mjs';
 import expectError from '../../../infra/testing/expectError';
-import {eventsDoneWaiting, resetEventListeners} from '../../../infra/testing/sw-env-mocks/event-listeners';
 import generateTestVariants from '../../../infra/testing/generate-variant-tests';
 
 describe(`[workbox-routing] Router`, function() {
@@ -27,12 +26,12 @@ describe(`[workbox-routing] Router`, function() {
     // a mocha bug where `afterEach` hooks aren't run for skipped tests.
     // https://github.com/mochajs/mocha/issues/2546
     sandbox.restore();
-    resetEventListeners();
+    self.listeners.reset();
   });
 
   after(function() {
     sandbox.restore();
-    resetEventListeners();
+    self.listeners.reset();
   });
 
   describe(`constructor`, function() {
@@ -203,7 +202,7 @@ describe(`[workbox-routing] Router`, function() {
       sandbox.spy(router, 'handleRequest');
       self.dispatchEvent(event);
 
-      await eventsDoneWaiting();
+      await ExtendableEvent.eventsDoneWaiting();
 
       expect(router.handleRequest.callCount).to.equal(3);
       expect(router.handleRequest.args[0][0].request.url).to.equal('/one');

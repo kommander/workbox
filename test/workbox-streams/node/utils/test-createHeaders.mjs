@@ -23,7 +23,7 @@ describe(`[workbox-streams] utils/createHeaders`, function() {
   it(`should use the default Content-Type, and construct with an empty object, when headersInit is undefined`, function() {
     const headersSpy = sandbox.spy(global, 'Headers');
     const headers = createHeaders();
-    expect(headers.entries()).to.eql([
+    expect(Array.from(headers.entries())).to.eql([
       DEFAULT_CONTENT_TYPE,
     ]);
     expect(headersSpy.calledOnce).to.be.true;
@@ -37,7 +37,7 @@ describe(`[workbox-streams] utils/createHeaders`, function() {
       'x-two': '2',
     };
     const headers = createHeaders(headersInit);
-    expect(headers.entries()).to.eql([
+    expect(Array.from(headers.entries())).to.eql([
       ...Object.entries(headersInit),
       DEFAULT_CONTENT_TYPE,
     ]);
@@ -48,6 +48,6 @@ describe(`[workbox-streams] utils/createHeaders`, function() {
       'content-type': 'text/plain',
     };
     const headers = createHeaders(headersInit);
-    expect(headers.entries()).to.eql(Object.entries(headersInit));
+    expect(Array.from(headers.entries())).to.eql(Object.entries(headersInit));
   });
 });

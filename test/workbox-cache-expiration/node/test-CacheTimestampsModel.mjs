@@ -7,7 +7,6 @@
 */
 
 import {expect} from 'chai';
-import {reset as iDBReset} from 'shelving-mock-indexeddb';
 import * as sinon from 'sinon';
 
 import CacheTimestampsModel from '../../../packages/workbox-cache-expiration/models/CacheTimestampsModel.mjs';
@@ -18,12 +17,12 @@ describe(`[workbox-cache-expiration] CacheTimestampsModel`, function() {
 
   beforeEach(function() {
     sandbox.restore();
-    iDBReset();
+    self.resetIDB();
   });
 
   after(function() {
     sandbox.restore();
-    iDBReset();
+    self.resetIDB();
   });
 
   describe(`constructor`, function() {

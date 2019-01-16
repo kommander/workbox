@@ -8,8 +8,6 @@
 
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {reset as iDBReset} from 'shelving-mock-indexeddb';
-import {eventsDoneWaiting, resetEventListeners} from '../../../infra/testing/sw-env-mocks/event-listeners.js';
 import {Queue} from '../../../packages/workbox-background-sync/Queue.mjs';
 import {cacheNames} from '../../../packages/workbox-core/_private/cacheNames.mjs';
 import {NetworkFirst, NetworkOnly} from '../../../packages/workbox-strategies/index.mjs';
@@ -27,9 +25,9 @@ describe(`[workbox-google-analytics] initialize`, function() {
   const sandbox = sinon.createSandbox();
   const reset = async () => {
     Queue._queueNames.clear();
-    resetEventListeners();
+    self.listeners.reset();
     sandbox.restore();
-    iDBReset();
+    self.resetIDB();
 
     const usedCaches = await caches.keys();
     await Promise.all(usedCaches.map((cacheName) => caches.delete(cacheName)));
@@ -83,7 +81,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
 
     self.dispatchEvent(new FetchEvent('fetch', {request: analyticsJsRequest}));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     const usedCaches = await caches.keys();
     expect(usedCaches).to.have.lengthOf(1);
@@ -104,7 +102,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
 
     self.dispatchEvent(new FetchEvent('fetch', {request: analyticsJsRequest}));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     const defaultCacheName = cacheNames.getGoogleAnalyticsName();
     const usedCaches = await caches.keys();
@@ -239,7 +237,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     const [call1Args, call2Args] = Queue.prototype.pushRequest.args;
     expect(call1Args[0].request.url).to.equal(`https://` +
@@ -262,7 +260,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
     clock.tick(100);
 
     self.dispatchEvent(new FetchEvent('fetch', {
@@ -272,7 +270,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     self.fetch.restore();
     sandbox.stub(self, 'fetch').resolves(new Response('', {status: 200}));
@@ -283,7 +281,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       tag: `workbox-background-sync:workbox-google-analytics`,
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     expect(self.fetch.callCount).to.equal(2);
 
@@ -319,7 +317,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
     clock.tick(100);
 
     self.dispatchEvent(new FetchEvent('fetch', {
@@ -329,7 +327,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     self.fetch.restore();
     sandbox.stub(self, 'fetch').resolves(new Response('', {status: 200}));
@@ -340,7 +338,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       tag: `workbox-background-sync:workbox-google-analytics`,
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     expect(self.fetch.callCount).to.equal(2);
 
@@ -378,7 +376,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     self.fetch.restore();
     sandbox.stub(self, 'fetch').resolves(new Response('', {status: 200}));
@@ -387,7 +385,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       tag: `workbox-background-sync:workbox-google-analytics`,
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     expect(self.fetch.callCount).to.equal(2);
 
@@ -432,7 +430,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       }),
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     self.fetch.restore();
     sandbox.stub(self, 'fetch').resolves(new Response('', {status: 200}));
@@ -441,7 +439,7 @@ describe(`[workbox-google-analytics] initialize`, function() {
       tag: `workbox-background-sync:workbox-google-analytics`,
     }));
 
-    await eventsDoneWaiting();
+    await ExtendableEvent.eventsDoneWaiting();
 
     expect(self.fetch.callCount).to.equal(2);
 
